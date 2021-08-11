@@ -353,6 +353,7 @@ async function loadDB() {
       var word = [];
       var wordData = [];
       var wordSynonym = [];
+      var wCount = 0;
 
       var wordAlt;
       var wordAltHtml;
@@ -364,6 +365,7 @@ async function loadDB() {
         wordData = data[prop].urlsArray; // urls associated with the word.
         wordSynonym = data[prop].udSynonym;
         wordAlt = data[prop].altWord;
+        wCount++;
 
         // console.log(wordSynonym);
 
@@ -380,10 +382,11 @@ async function loadDB() {
         html2 += `
         <div class="card my-2 py-0">
           <div class="card-body d-flex py-1">
+          <h6 class="card-title my-auto col-md-1">${wCount}</h6>
               <h6 class="card-title my-auto col-md-3">${
                 typeof wordAlt === 'string' && wordAlt.length>1 ? prop + ' (' + wordAlt + ')' : prop
               }</h6>
-              <div class="col-md-5 my-auto">
+              <div class="col-md-4 my-auto">
               ${
                 wordSynonym?wordSynonym:``
               }
