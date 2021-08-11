@@ -253,6 +253,8 @@ async function consoPut(e) {
 
     btnClickCount = 0;
     urlsArray.length = 0;
+    document.getElementById("synonyms").value = '';
+    document.getElementById("saveasword").value = '';
     toastCall();
     releaseButtons();
   }
@@ -289,6 +291,8 @@ async function forceUpdate() {
   
     btnClickCount = 0;
     urlsArray.length = 0;
+    document.getElementById("synonyms").value = '';
+    document.getElementById("saveasword").value = '';
     toastCall();
     releaseButtons();
   }
