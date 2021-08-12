@@ -79,21 +79,27 @@
             <button class="btn btn-primary" type="button"" id='btn02' onclick=" showhideToggle()">Toggle View</button>
             <button class="btn btn-primary" type="button" onclick="loadDB()">Load Saved Words</button>
             
+            <!-- Tooltip with HTML -->
+            <!-- <button class="btn btn-primary" type="button" onclick="loadDB()" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">Load Saved Words</button> -->
+            
             <button type="button" class="btn btn-primary" id="loginBtn">
               Login
             </button>
             <button type="button" class="btn btn-primary" id="logoutBtn">
               Logout
             </button>
+            <!-- <button class="btn btn-primary" type="button" id='btn02' onclick="callToolTip()">Call Tooltip</button> -->
           </div>
         </div>
 
         <!-- Textbox Group 2 -->
 
         <div class="input-group mt-2">
-          <input type="text" class="form-control" placeholder="Synonyms (user-defined) (optional)" aria-describedby="basic-addon2" id='synonyms'>
-          <div class="col-md-4"></div>
-          <input type="text" class="form-control" placeholder="Save As... (optional)" aria-describedby="basic-addon2" id='saveasword'>
+          <input type="text" class="form-control m-1 rounded" placeholder="Synonyms (user-defined) (optional)" aria-describedby="basic-addon2" id='synonyms'>
+          <!-- <div class="col-md-1"></div> -->
+          <input type="text" class="form-control m-1 rounded" placeholder="Ignore Words count form Content" aria-describedby="basic-addon2" id='ignorewordlist'>
+          <!-- <div class="col-md-1"></div> -->
+          <input type="text" class="form-control m-1 rounded" placeholder="Save As... (optional)" aria-describedby="basic-addon2" id='saveasword'>
         </div>
       </div>
       <div class="col-md-2"></div>

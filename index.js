@@ -14,7 +14,7 @@
 window.onload = function () {
 
   document.getElementById('btn01').addEventListener("click", fetchMovies);
-  
+
   // Get the input field
   var input = document.getElementById("querykey");
 
@@ -54,19 +54,20 @@ const url = ['https://friends.fandom.com/',
   'https://suits.fandom.com/',
   'https://terminator.fandom.com/',
   'https://southpark.fandom.com/'
-  
+
 ];
 
 // Update link 91 loop count
 
 const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory',
   'Harry Potter', 'Breaking Bad', 'PIXAR', 'G.O.T', 'Lord of the Rings',
-  'The Godfather','PotC','Sherlock','Dragonball','The Hunger Games',
-  'M.C.U', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe','Twilight Saga','T.A.A.H.M','Suits','Terminator','South Park'];
+  'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
+  'M.C.U', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe', 'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park'];
 
 var title;
 var link;
 var countWords = 0;
+var countIgnoreWords = 0;
 var html = '';
 var html2 = '';
 var dispHandle = 0;
@@ -76,6 +77,11 @@ var urlsArray = [];
 var UDsynonymsArray = [];
 var btnToggle = [];
 var toastError = 0;
+
+// Ignore Word
+
+var ignoreWordArrayWord = [];
+var ignoreWordArrayWordCount = [];
 
 async function fetchMovies() {
 
@@ -127,7 +133,10 @@ async function fetchMovies() {
       await fetch(wiki[0] + 'api.php?action=query&prop=revisions&titles=' + wiki[1] + '&rvprop=content&format=json&origin=*')
         .then(response => response.text())
         .then((data) => {
-          // console.log(data);
+
+          // WebPage Content
+          console.log('Webpage content - line 130');
+          console.log(data);
 
           lowCaseData = data.toLowerCase();
 
@@ -138,7 +147,47 @@ async function fetchMovies() {
           var reGex = new RegExp(word, 'g');
           var count = (lowCaseData.match(reGex) || []).length;
 
-          //
+          // // // IGNORE FILTER implementation // // //
+
+          // var ignoreWord = 'dolorous edd'; // fetch from input field
+
+          // WRONG : 'the hound, arya stark' or 'dolorous umbridge, the hound'
+          // CORRECT :  'the hound,arya stark'
+
+          // var ignoreWordList = 'the hound,arya stark';
+          var ignoreWordList = document.getElementById('ignorewordlist').value.toLowerCase();
+          var ignoreWordArray = ignoreWordList.split(','); //(2) ["the hound", "arya stark"]
+
+          // console.log('array 152');
+          // console.log(ignoreWordArray);
+
+          // var ignoreWordReGex = new RegExp(ignoreWord, 'g');
+
+          if (ignoreWordList.length > 1) {
+
+            for (var x in ignoreWordArray) {
+              var ignoreWordReGex = new RegExp(ignoreWordArray[x], 'g');
+              var ignoreWordCount = (lowCaseData.match(ignoreWordReGex) || []).length;
+
+              if (ignoreWordCount > 0) {
+                // alert(ignoreWordArray[x]);
+                // alert(ignoreWordCount);
+
+                ignoreWordArrayWord.push(ignoreWordArray[x]);
+                ignoreWordArrayWordCount.push(ignoreWordCount);
+
+              }
+              console.log('link 175');
+              // console.log(ignoreWordArrayWord);
+              // console.log(ignoreWordArrayWordCount);
+            }
+
+            console.log(ignoreWordArrayWord);
+            console.log(ignoreWordArrayWordCount);
+            console.log(ignoreWordCount + 'ignore words - line 149');
+          }
+
+          // // // 
 
           console.log(count);
           countWords = count;
@@ -148,10 +197,17 @@ async function fetchMovies() {
 
       // if-else experimental, previously the inner-if statement was present directly.
 
-      if(countWords > 0) {
+      if (countWords > 0) {
 
-      html += `
-        <div class="card my-2 py-0">
+        html += `
+        <div class="card my-2 py-0" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+          ${"title='" +
+          ignoreWordArrayWord.map((item, index) => {
+            return "<b>" + item + "</b>" + " " + "(" + ignoreWordArrayWordCount[index] + ")" + "<br>"
+          }).join("")
+          + "'"
+          }
+        >
           <div class="card-body d-flex justify-content-between py-1">
               <h6 class="card-title my-auto col-md-6">${title[j]}</h6>
               <div class="col-md-2"></div>
@@ -166,6 +222,9 @@ async function fetchMovies() {
         html += '';
       }
 
+      ignoreWordArrayWord.length = 0;
+      ignoreWordArrayWordCount.length = 0;
+
     } // end of for loop
 
     document.getElementById('result').innerHTML += html;
@@ -177,14 +236,14 @@ async function fetchMovies() {
   } // end of for loop
 
   //toast
-
   toastCall();
+  callToolTip();
 
 }
 
 function toastCall() {
 
-  if(toastError == 1){
+  if (toastError == 1) {
     document.getElementById('toastContent').innerHTML = 'Operation Failed!';
     toastError = 0;
   }
@@ -235,10 +294,10 @@ async function consoPut(e) {
     var altWord = document.getElementById("saveasword").value;
     // var altWord = document.getElementById("saveasword").value.length;
     btnClickCount = 0;
-  
+
     // console.log(altWord.length);
-  
-    if(altWord.length > 1) {
+
+    if (altWord.length > 1) {
       [searchInput, altWord] = [altWord, searchInput];
     }
 
@@ -269,7 +328,7 @@ async function forceUpdate() {
 
   // console.log(altWord.length);
 
-  if(altWord.length > 1) {
+  if (altWord.length > 1) {
     [searchInput, altWord] = [altWord, searchInput];
   }
 
@@ -279,7 +338,7 @@ async function forceUpdate() {
   console.log(altWord);
 
 
-  if(urlsArray.length != 0){
+  if (urlsArray.length != 0) {
     await firebase.database().ref('words/' + searchInput).set({
       urlsArray,
       udSynonym,
@@ -288,7 +347,7 @@ async function forceUpdate() {
       console.log(err);
       toastError = 1;
     });
-  
+
     btnClickCount = 0;
     urlsArray.length = 0;
     document.getElementById("synonyms").value = '';
@@ -322,13 +381,13 @@ function showhideToggle() {
   var e = document.getElementById('result');
   var e2 = document.getElementById('DBresult');
 
-  
-  if(dispHandle == 1){
+
+  if (dispHandle == 1) {
 
     e.style.display = 'block';
     e2.style.display = 'none';
     dispHandle = 0;
-  
+
   }
 
   e.style.display = (e.style.display == 'block') ? 'none' : 'block';
@@ -387,19 +446,16 @@ async function loadDB() {
         <div class="card my-2 py-0">
           <div class="card-body d-flex py-1">
           <h6 class="card-title my-auto col-md-1">${wCount}</h6>
-              <h6 class="card-title my-auto col-md-3">${
-                typeof wordAlt === 'string' && wordAlt.length>1 ? prop + ' (' + wordAlt + ')' : prop
-              }</h6>
+              <h6 class="card-title my-auto col-md-3">${typeof wordAlt === 'string' && wordAlt.length > 1 ? prop + ' (' + wordAlt + ')' : prop
+          }</h6>
               <div class="col-md-4 my-auto">
-              ${
-                wordSynonym?wordSynonym:``
-              }
+              ${wordSynonym ? wordSynonym : ``
+          }
               </div>
-              ${
-                wordData.map(item => {
-                    return "<a href='" + item + "' target='_blank' class='btn btn-primary px-3 col-md-1 mx-1'>Link</a>"
-                }).join("")
-              }
+              ${wordData.map(item => {
+            return "<a href='" + item + "' target='_blank' class='btn btn-primary px-3 col-md-1 mx-1'>Link</a>"
+          }).join("")
+          }
               </div>
             </div>
           </div>`;
@@ -413,4 +469,14 @@ async function loadDB() {
   document.getElementById('DBresult').innerHTML += html2;
   html2 = null;
   toastCall();
+}
+
+function callToolTip() {
+
+  // It needs to be called explicitly in order html/css/tooltip-position to work.
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+  // alert('tooltip call');
 }
