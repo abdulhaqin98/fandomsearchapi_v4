@@ -58,10 +58,6 @@ const url = ['https://friends.fandom.com/',
   'https://starwars.fandom.com/',
   'https://pokemon.fandom.com/',
   'https://bojackhorseman.fandom.com/'
-<<<<<<< HEAD
-=======
-
->>>>>>> a177c882c47a147a585de3eed54c544748d0e102
 ];
 
 // Update link 103 loop count
