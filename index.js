@@ -140,13 +140,9 @@ async function fetchMovies() {
         .then(response => response.text())
         .then((data) => {
 
-          // WebPage Content
-          // console.log('Webpage content - line 130');
-          // console.log(data);
-
           lowCaseData = data.toLowerCase();
           console.log(lowCaseData);
-          console.log('webpage content string - line 143');
+          console.log('webpage content string - line 145');
 
           // var count = (lowCaseData.match(/apothecary/g) || []).length;
 
@@ -199,8 +195,6 @@ async function fetchMovies() {
           };
 
           var resultObj = getFromBetween.get(lowCaseData, "[[", "]]");
-          // console.log(resultObj);
-          // console.log('line 197');
 
           for (var x in resultObj) {
 
@@ -210,7 +204,6 @@ async function fetchMovies() {
             countMerge += countInsideObj;
 
           }
-          //console.log(countMerge);
 
           if (countMerge > 0) {
             ignoreWordArrayWord.push('[Hyperlinks] ' + word);
@@ -242,21 +235,16 @@ async function fetchMovies() {
               var ignoreWordCount = (lowCaseData.match(ignoreWordReGex) || []).length;
 
               if (ignoreWordCount > 0) {
-                // alert(ignoreWordArray[x]);
-                // alert(ignoreWordCount);
 
                 ignoreWordArrayWord.push(ignoreWordArray[x]);
                 ignoreWordArrayWordCount.push(ignoreWordCount);
 
               }
-              console.log('link 175');
-              // console.log(ignoreWordArrayWord);
-              // console.log(ignoreWordArrayWordCount);
             }
 
-            console.log(ignoreWordArrayWord);
-            console.log(ignoreWordArrayWordCount);
-            console.log(ignoreWordCount + 'ignore words - line 149');
+            // console.log(ignoreWordArrayWord);
+            // console.log(ignoreWordArrayWordCount);
+            // console.log(ignoreWordCount + 'ignore words - line 149');
           }
 
           // // // END OF IGNORE FILTER IMPLEMENTATION // // //
@@ -264,10 +252,6 @@ async function fetchMovies() {
           console.log(count);
           countWords = count;
         });
-
-      // end of the new feature
-
-      // if-else experimental, previously the inner-if statement was present directly.
 
       if (countWords > 0) {
 
@@ -383,10 +367,6 @@ async function consoPut(e) {
       toastError = 1;
     });
 
-    btnClickCount = 0;
-    urlsArray.length = 0;
-    document.getElementById("synonyms").value = '';
-    document.getElementById("saveasword").value = '';
     toastCall();
     releaseButtons();
   }
@@ -396,20 +376,12 @@ async function forceUpdate() {
   var searchInput = document.getElementById("querykey").value;
   var udSynonym = document.getElementById("synonyms").value;
   var altWord = document.getElementById("saveasword").value;
-  // var altWord = document.getElementById("saveasword").value.length;
-  btnClickCount = 0;
 
-  // console.log(altWord.length);
+  btnClickCount = 0;
 
   if (altWord.length > 1) {
     [searchInput, altWord] = [altWord, searchInput];
   }
-
-  // Experimental
-
-  console.log(searchInput);
-  console.log(altWord);
-
 
   if (urlsArray.length != 0) {
     await firebase.database().ref('words/' + searchInput).set({
@@ -421,10 +393,6 @@ async function forceUpdate() {
       toastError = 1;
     });
 
-    btnClickCount = 0;
-    urlsArray.length = 0;
-    document.getElementById("synonyms").value = '';
-    document.getElementById("saveasword").value = '';
     toastCall();
     releaseButtons();
   }
@@ -443,6 +411,11 @@ function releaseButtons() {
 
   }
 
+  document.getElementById("synonyms").value = '';
+  document.getElementById("saveasword").value = '';
+  document.getElementById("ignorewordlist").value = '';
+  btnClickCount = 0;
+  urlsArray.length = 0;
   btnToggle.length = 0;
 
 }
@@ -453,7 +426,6 @@ function showhideToggle() {
 
   var e = document.getElementById('result');
   var e2 = document.getElementById('DBresult');
-
 
   if (dispHandle == 1) {
 
@@ -486,6 +458,7 @@ async function loadDB() {
       //   alert("Key:" + prop);
       //   alert("Value:" + data[prop]);
       // }
+
       var word = [];
       var wordData = [];
       var wordSynonym = [];
@@ -503,17 +476,7 @@ async function loadDB() {
         wordAlt = data[prop].altWord;
         wCount++;
 
-        // console.log(wordSynonym);
-
-        // console.log(typeof wordAlt);
-
-        // if(typeof wordAlt === 'string') {
-        //   console.log(wordAlt);
-        //   wordAltHtml = 
-        // }
-
         //array.forEach(item => console.log(item));
-        // <div class="card-body d-flex justify-content-between py-1"></div>
 
         html2 += `
         <div class="card my-2 py-0">
@@ -551,5 +514,4 @@ function callToolTip() {
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
-  // alert('tooltip call');
 }
