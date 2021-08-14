@@ -53,16 +53,20 @@ const url = ['https://friends.fandom.com/',
   'https://twoandahalfmen.fandom.com/',
   'https://suits.fandom.com/',
   'https://terminator.fandom.com/',
-  'https://southpark.fandom.com/'
-
+  'https://southpark.fandom.com/',
+  'https://starwars.fandom.com/',
+  'https://pokemon.fandom.com/',
+  'https://bojackhorseman.fandom.com/'
 ];
 
-// Update link 91 loop count
+// Update link 103 loop count
 
 const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory',
   'Harry Potter', 'Breaking Bad', 'PIXAR', 'G.O.T', 'Lord of the Rings',
   'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
-  'M.C.U', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe', 'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park'];
+  'M.C.U', 'Marvel Database', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
+  'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park','Star Wars',
+  'Pokemon', 'Bojack Horseman'];
 
 var title;
 var link;
@@ -82,6 +86,7 @@ var toastError = 0;
 
 var ignoreWordArrayWord = [];
 var ignoreWordArrayWordCount = [];
+var countMerge = 0;
 
 async function fetchMovies() {
 
@@ -95,7 +100,7 @@ async function fetchMovies() {
   html = '';
   document.getElementById('result').innerHTML = null;
 
-  for (i = 0; i < 24; i++) {
+  for (i = 0; i < 28; i++) {
 
     const response = await fetch(url[i] + 'api.php?action=opensearch&search=' + key + '&format=json&origin=*').then(res =>
       res.json()).then(d => {
@@ -135,10 +140,12 @@ async function fetchMovies() {
         .then((data) => {
 
           // WebPage Content
-          console.log('Webpage content - line 130');
-          console.log(data);
+          // console.log('Webpage content - line 130');
+          // console.log(data);
 
           lowCaseData = data.toLowerCase();
+          console.log(lowCaseData);
+          console.log('webpage content string - line 143');
 
           // var count = (lowCaseData.match(/apothecary/g) || []).length;
 
@@ -146,6 +153,70 @@ async function fetchMovies() {
           var word = document.getElementById('querykey').value.toLowerCase();
           var reGex = new RegExp(word, 'g');
           var count = (lowCaseData.match(reGex) || []).length;
+
+          // // // // EXPERIMENT TO EXTRACT BETWEEN [[ ]] // // // //
+
+          var getFromBetween = {
+            results: [],
+            string: "",
+            getFromBetween: function (sub1, sub2) {
+              if (this.string.indexOf(sub1) < 0 || this.string.indexOf(sub2) < 0) return false;
+              var SP = this.string.indexOf(sub1) + sub1.length;
+              var string1 = this.string.substr(0, SP);
+              var string2 = this.string.substr(SP);
+              var TP = string1.length + string2.indexOf(sub2);
+              return this.string.substring(SP, TP);
+            },
+            removeFromBetween: function (sub1, sub2) {
+              if (this.string.indexOf(sub1) < 0 || this.string.indexOf(sub2) < 0) return false;
+              var removal = sub1 + this.getFromBetween(sub1, sub2) + sub2;
+              this.string = this.string.replace(removal, "");
+            },
+            getAllResults: function (sub1, sub2) {
+              // first check to see if we do have both substrings
+              if (this.string.indexOf(sub1) < 0 || this.string.indexOf(sub2) < 0) return;
+
+              // find one result
+              var result = this.getFromBetween(sub1, sub2);
+              // push it to the results array
+              this.results.push(result);
+              // remove the most recently found one from the string
+              this.removeFromBetween(sub1, sub2);
+
+              // if there's more substrings
+              if (this.string.indexOf(sub1) > -1 && this.string.indexOf(sub2) > -1) {
+                this.getAllResults(sub1, sub2);
+              }
+              else return;
+            },
+            get: function (string, sub1, sub2) {
+              this.results = [];
+              this.string = string;
+              this.getAllResults(sub1, sub2);
+              return this.results;
+            }
+          };
+
+          var resultObj = getFromBetween.get(lowCaseData, "[[", "]]");
+          // console.log(resultObj);
+          // console.log('line 197');
+
+          for (var x in resultObj) {
+
+            var str = resultObj[x];
+            var reGex = new RegExp(word, 'g');
+            var countInsideObj = (str.match(reGex) || []).length;
+            countMerge += countInsideObj;
+
+          }
+          //console.log(countMerge);
+
+          if (countMerge > 0) {
+            ignoreWordArrayWord.push('[Hyperlinks] ' + word);
+            ignoreWordArrayWordCount.push(countMerge);
+          }
+
+          // // // // END OF EXPERIMENT to EXTRACT BETWEEN [[ ]] // // //
 
           // // // IGNORE FILTER implementation // // //
 
@@ -187,7 +258,7 @@ async function fetchMovies() {
             console.log(ignoreWordCount + 'ignore words - line 149');
           }
 
-          // // // 
+          // // // END OF IGNORE FILTER IMPLEMENTATION // // //
 
           console.log(count);
           countWords = count;
@@ -200,10 +271,10 @@ async function fetchMovies() {
       if (countWords > 0) {
 
         html += `
-        <div class="card my-2 py-0" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+        <div class="card my-2 py-0" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right"
           ${"title='" +
           ignoreWordArrayWord.map((item, index) => {
-            return "<b>" + item + "</b>" + " " + "(" + ignoreWordArrayWordCount[index] + ")" + "<br>"
+            return "<b>" + item + "</b>" + " " + "~(" + ignoreWordArrayWordCount[index] + ")" + "<br>"
           }).join("")
           + "'"
           }
@@ -224,6 +295,7 @@ async function fetchMovies() {
 
       ignoreWordArrayWord.length = 0;
       ignoreWordArrayWordCount.length = 0;
+      countMerge = 0;
 
     } // end of for loop
 
