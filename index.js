@@ -45,6 +45,7 @@ const url = ['https://friends.fandom.com/',
   'https://dragonball.fandom.com/',
   'https://thehungergames.fandom.com/',
   'https://marvelcinematicuniverse.fandom.com/',
+  'https://marvel.fandom.com/',
   'https://batman.fandom.com/',
   'https://dc.fandom.com/',
   'https://dcmovies.fandom.com/',
@@ -65,7 +66,7 @@ const url = ['https://friends.fandom.com/',
 const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory',
   'Harry Potter', 'Breaking Bad', 'PIXAR', 'G.O.T', 'Lord of the Rings',
   'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
-  'M.C.U', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
+  'M.C.U', 'Marvel Database', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
   'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park','Star Wars',
   'Pokemon', 'Bojack Horseman'];
 
@@ -100,7 +101,7 @@ async function fetchMovies() {
   html = '';
   document.getElementById('result').innerHTML = null;
 
-  for (i = 0; i < 27; i++) {
+  for (i = 0; i < 28; i++) {
 
     const response = await fetch(url[i] + 'api.php?action=opensearch&search=' + key + '&format=json&origin=*').then(res =>
       res.json()).then(d => {
