@@ -194,6 +194,13 @@ async function fetchMovies() {
             }
           };
 
+          // StarWars Fanodm Page of size 453996 creating call stack error.
+          // A workaround is to just ignore it.
+          // Only URL Counter for this specific page will not work.
+          if(lowCaseData.length == 453996) {
+            lowCaseData = '';
+          }
+
           var resultObj = getFromBetween.get(lowCaseData, "[[", "]]");
 
           for (var x in resultObj) {
