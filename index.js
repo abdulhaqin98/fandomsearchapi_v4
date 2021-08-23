@@ -58,7 +58,7 @@ const url = ['https://friends.fandom.com/',
   'https://starwars.fandom.com/',
   'https://pokemon.fandom.com/',
   'https://bojackhorseman.fandom.com/',
-  'https://simpsons.fandom.com/wiki/Simpsons_Wiki'
+  'https://simpsons.fandom.com/'
 ];
 
 // Update link 103 loop count
