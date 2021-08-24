@@ -57,7 +57,8 @@ const url = ['https://friends.fandom.com/',
   'https://southpark.fandom.com/',
   'https://starwars.fandom.com/',
   'https://pokemon.fandom.com/',
-  'https://bojackhorseman.fandom.com/'
+  'https://bojackhorseman.fandom.com/',
+  'https://simpsons.fandom.com/'
 ];
 
 // Update link 103 loop count
@@ -66,8 +67,13 @@ const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory'
   'Harry Potter', 'Breaking Bad', 'PIXAR', 'G.O.T', 'Lord of the Rings',
   'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
   'M.C.U', 'Marvel Database', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
+<<<<<<< HEAD
   'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park', 'Star Wars',
   'Pokemon', 'Bojack Horseman'];
+=======
+  'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park','Star Wars',
+  'Pokemon', 'Bojack Horseman', 'Simpsons'];
+>>>>>>> ab10d9d4ca5f37431bd6069448f38faa2bfd4154
 
 var title;
 var link;
@@ -102,7 +108,7 @@ async function fetchMovies() {
   html = '';
   document.getElementById('result').innerHTML = null;
 
-  for (i = 0; i < 28; i++) {
+  for (i = 0; i < 29; i++) {
 
     const response = await fetch(url[i] + 'api.php?action=opensearch&search=' + key + '&format=json&origin=*').then(res =>
       res.json()).then(d => {
@@ -533,6 +539,7 @@ function callToolTip() {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 }
+<<<<<<< HEAD
 
 // wiki content to Firebase for backup and easy access purpose
 // 'TOGGLE SWITCH' for this function is at line 492
@@ -656,3 +663,5 @@ function rawWikiPopUp(e) {
   // const modalClose = document.getElementById('close-modal');
   rawDataModal.show();
 }
+=======
+>>>>>>> ab10d9d4ca5f37431bd6069448f38faa2bfd4154
