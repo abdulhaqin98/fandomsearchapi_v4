@@ -3,7 +3,7 @@
 
 <head>
 
-  
+
   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase.js"></script>
   <script src="fbConfig.js"></script>
   <!-- Required meta tags -->
@@ -67,6 +67,78 @@
 
     <!-- modal end  -->
 
+    <!-- rawdata modal -->
+
+    <div class="modal fade" id='rawdataModal' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <!-- <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Raw Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div> -->
+
+          <!-- TABS -->
+          <div class="modal-body">
+
+          <div class="container my-1">
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+                <!-- <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                  type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+
+                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                  type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+
+                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                  type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button> -->
+
+              </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+
+              <!-- <div class="tab-pane fade show active p-3" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <h2>Home</h2>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio provident corporis aut, ipsa
+                  tenetur vel illo excepturi voluptate molestiae magnam, totam est id alias dicta a assumenda corrupti
+                  et repellat.</p>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio provident corporis aut, ipsa
+                  tenetur vel illo excepturi voluptate molestiae magnam, totam est id alias dicta a assumenda corrupti
+                  et repellat.</p>
+              </div>
+
+              <div class="tab-pane fade p-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <h2>Profile</h2>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi, cupiditate nam aperiam possimus,
+                  ratione modi enim inventore reiciendis ipsum mollitia, adipisci accusamus! Dolorem omnis illo incidunt
+                  ex, sit minus numquam.</p>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi, cupiditate nam aperiam possimus,
+                  ratione modi enim inventore reiciendis ipsum mollitia, adipisci accusamus! Dolorem omnis illo incidunt
+                  ex, sit minus numquam.</p>
+              </div>
+
+              <div class="tab-pane fade p-3" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <h2>Contact</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere voluptates nostrum vel officiis!
+                  Magni animi assumenda numquam exercitationem facilis! Excepturi, doloremque illo. Voluptate, natus
+                  molestias? Enim repellendus earum ad sunt!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere voluptates nostrum vel officiis!
+                  Magni animi assumenda numquam exercitationem facilis! Excepturi, doloremque illo. Voluptate, natus
+                  molestias? Enim repellendus earum ad sunt!</p>
+              </div> -->
+
+            </div>
+          </div>
+        </div>
+
+          <!-- END of tabs -->
+
+        </div>
+      </div>
+    </div>
+
+    <!-- modal end  -->
+
 
     <div class="row" id="block001">
       <div class="col-md-2"></div>
@@ -75,14 +147,15 @@
           <input type="text" class="form-control" placeholder="Word" aria-describedby="basic-addon2" id='querykey'>
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" id='btn01'>Search</button>
-            <button class="btn btn-primary" type="button" disabled="disabled" id='btn02' onclick="forceUpdate()">Force Update</button>
+            <button class="btn btn-primary" type="button" disabled="disabled" id='btn02' onclick="forceUpdate()">Force
+              Update</button>
             <button class="btn btn-primary" type="button"" id='btn02' onclick=" showhideToggle()">Toggle View</button>
             <button class="btn btn-primary" type="button" onclick="loadDB()">Load Saved Words</button>
             <button class="btn btn-primary" type="button" id='btn03' onclick="releaseButtons()">Reset</button>
-            
+
             <!-- Tooltip with HTML -->
             <!-- <button class="btn btn-primary" type="button" onclick="loadDB()" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">Load Saved Words</button> -->
-            
+
             <button type="button" class="btn btn-primary" id="loginBtn">
               Login
             </button>
@@ -96,11 +169,23 @@
         <!-- Textbox Group 2 -->
 
         <div class="input-group mt-2">
-          <input type="text" class="form-control m-1 rounded" placeholder="Synonyms (user-defined) (optional)" aria-describedby="basic-addon2" id='synonyms'>
-          <!-- <div class="col-md-1"></div> -->
-          <input type="text" class="form-control m-1 rounded" placeholder="Ignore Words count form Content" aria-describedby="basic-addon2" id='ignorewordlist'>
-          <!-- <div class="col-md-1"></div> -->
-          <input type="text" class="form-control m-1 rounded" placeholder="Save As... (optional)" aria-describedby="basic-addon2" id='saveasword'>
+          <div class="col-md-3 m-1">
+            <input type="text" class="form-control rounded" placeholder="Synonyms (optional)"
+              aria-describedby="basic-addon2" id='synonyms'>
+          </div>
+          <div class="col-md-4 m-1">
+            <input type="text" class="form-control rounded" placeholder="Ignore Words count form Content"
+              aria-describedby="basic-addon2" id='ignorewordlist'>
+          </div>
+          <div class="col-md-3 m-1">
+            <input type="text" class="form-control rounded" placeholder="Save As... (optional)"
+              aria-describedby="basic-addon2" id='saveasword'>
+          </div>
+          <div class="col-md-1 m-1">
+            <button class="btn btn-primary rounded" type="button" onclick="syncWikiToFirebase()">Sync</button>
+            <!-- <button class="btn btn-primary rounded" type="button" id="newfeatureTest" onclick="rawWikiPopUp()">New
+              Feature 001</button> -->
+          </div>
         </div>
       </div>
       <div class="col-md-2"></div>

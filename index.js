@@ -66,7 +66,7 @@ const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory'
   'Harry Potter', 'Breaking Bad', 'PIXAR', 'G.O.T', 'Lord of the Rings',
   'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
   'M.C.U', 'Marvel Database', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
-  'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park','Star Wars',
+  'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park', 'Star Wars',
   'Pokemon', 'Bojack Horseman'];
 
 var title;
@@ -82,6 +82,7 @@ var urlsArray = [];
 var UDsynonymsArray = [];
 var btnToggle = [];
 var toastError = 0;
+var storeWikiToFirebaseToggle = 0;
 
 // Ignore Word
 
@@ -197,7 +198,7 @@ async function fetchMovies() {
           // StarWars Fanodm Page of size 453996 creating call stack error. Word: 'Paragon'
           // A workaround is to just ignore it.
           // Only URL Counter for this specific page will not work.
-          if(lowCaseData.length == 453996) {
+          if (lowCaseData.length == 453996) {
             lowCaseData = '';
           }
 
@@ -483,18 +484,27 @@ async function loadDB() {
         wordAlt = data[prop].altWord;
         wCount++;
 
+        // a copy of content to firebase for backup and easy access.
+        // 'Switch OFF' once the database generated a backup.
+        // 'Switch ON' if backup has to be updated with new words or data to replace
+
+        if (storeWikiToFirebaseToggle == 1) {
+          storeWikiToFirebase(prop, wordData);
+        }
+
         //array.forEach(item => console.log(item));
 
         html2 += `
         <div class="card my-2 py-0">
           <div class="card-body d-flex py-1">
           <h6 class="card-title my-auto col-md-1">${wCount}</h6>
-              <h6 class="card-title my-auto col-md-3">${typeof wordAlt === 'string' && wordAlt.length > 1 ? prop + ' (' + wordAlt + ')' : prop
+          <h6 class="card-title my-auto col-md-3">${typeof wordAlt === 'string' && wordAlt.length > 1 ? prop + ' (' + wordAlt + ')' : prop
           }</h6>
               <div class="col-md-4 my-auto">
               ${wordSynonym ? wordSynonym : ``
           }
               </div>
+              <button class="btn btn-primary" type="button" id="${prop}" onclick="rawWikiPopUp(this)">#</button>
               ${wordData.map(item => {
             return "<a href='" + item + "' target='_blank' class='btn btn-primary px-3 col-md-1 mx-1'>Link</a>"
           }).join("")
@@ -511,6 +521,7 @@ async function loadDB() {
 
   document.getElementById('DBresult').innerHTML += html2;
   html2 = null;
+  storeWikiToFirebaseToggle = 0;
   toastCall();
 }
 
@@ -521,4 +532,127 @@ function callToolTip() {
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
+}
+
+// wiki content to Firebase for backup and easy access purpose
+// 'TOGGLE SWITCH' for this function is at line 492
+
+async function storeWikiToFirebase(word, wordUrls) {
+
+  // var url = "https://harrypotter.fandom.com/wiki/Dementor";
+
+  var contentArray = [];
+
+  for (var x in wordUrls) {
+
+    var url = wordUrls[x];
+    var wiki = url.split('wiki/');
+
+    await fetch(wiki[0] + 'api.php?action=query&prop=revisions&titles=' + wiki[1] + '&rvprop=content&format=json&origin=*')
+      .then(response => response.json())
+      .then((data) => {
+        var rawData = data.query.pages;
+        var key = Object.keys(rawData);
+
+        // console.log(key);
+        // console.log(rawData[key].revisions[0]["*"]);
+
+        try {
+          var content = rawData[key].revisions[0]["*"];
+        }
+        catch (err) {
+          console.log(err);
+        }
+        // var content = rawData[key].revisions[0]["*"];
+        contentArray.push(content);
+
+      });
+  }
+
+  await firebase.database().ref('wordContent/' + word).set({
+    contentArray
+  }).catch(err => {
+    console.log(err);
+    // toastError = 1;
+  });
+
+  contentArray.length = 0;
+  console.log(word + 'updated');
+}
+
+function syncWikiToFirebase() {
+  alert('It will consume about 90 MB of Firebase DB Storage and Bandwidth. Please, Check Console!');
+  storeWikiToFirebaseToggle = 1;
+  loadDB();
+}
+
+// function storeWikiToFirebase(){
+//   console.log('called');
+// }
+
+function rawWikiPopUp(e) {
+
+  var getWord = e.id;
+  // .replace(/ /g,'');
+  console.log(getWord);
+
+  async function loadWiki() {
+
+    var url = 'https://mag1000gre-default-rtdb.europe-west1.firebasedatabase.app/wordContent/'+getWord+'/contentArray.json';
+    console.log(url);
+    var navTabArray = ['nav001', 'nav002', 'nav003'];
+    var navTabArrayAria = ['nav001-tab', 'nav002-tab', 'nav003-tab'];
+    var navTabHtml = '';
+    var navBodyHtml = '';
+
+    await fetch(url)
+      .then(response => response.json())
+      // .then((data) => console.log(JSON.stringify(data)));
+      .then((data) => {
+
+        // Most Important Trick while dealing with JSON Data ***
+        // Replace '\n' with '<br>'
+        var workData = JSON.parse(JSON.stringify(data).replace(/\\n/g, '<br>'));
+
+        // console.log(workData);
+        // console.log(JSON.parse(workData));
+        // console.log(workData.replace(/\\n/g, '<br>'));
+
+        // var rawData = data.query.pages;
+        // var key = Object.keys(rawData);
+
+        // console.log(key);
+        // console.log(rawData[key].revisions[0]["*"]);
+
+        var kLength = Object.keys(workData).length;
+
+        for (var x = 0; x < kLength; x++) {
+
+          navTabHtml += `<button class="nav-link" id="${navTabArrayAria[x]}" data-bs-toggle="tab" data-bs-target="#${navTabArray[x]}"
+          type="button" role="tab" aria-controls="${navTabArray[x]}" aria-selected="true">${x}</button>`
+
+          navBodyHtml += `<div class="tab-pane fade p-3" id="${navTabArray[x]}" role="tabpanel" aria-labelledby="${navTabArrayAria[x]}">
+                        ${workData[x]}
+                        </div>`
+        }
+
+        document.getElementById('nav-tab').innerHTML = navTabHtml;
+        document.getElementById('nav-tabContent').innerHTML = navBodyHtml;
+
+        navTabHtml = '';
+        navBodyHtml = '';
+        data.length = 0;
+        workData.length = 0;
+
+        // console.log(Object.keys(data).length);
+        // console.log(data);
+
+      });
+  }
+  loadWiki();
+
+  const RDmodalOpen = document.getElementById('newfeatureTest');
+  const rawDataModal = new bootstrap.Modal(document.getElementById('rawdataModal'));
+  // const modalClose = document.getElementById('close-modal');
+  rawDataModal.show();
 }
