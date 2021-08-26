@@ -213,8 +213,8 @@ async function fetchMovies() {
           //   lowCaseData = '';
           // }
           //
-          // This above always sets 'lowCaseData' to null. Hence, line 218 does not work.
-          // The split up alternative approach works fine.
+          // This always sets 'lowCaseData' to null. Hence, line 218 does not work.
+          // The split up alternative approach at 203 to 208 works fine.
 
           var resultObj = getFromBetween.get(lowCaseData, "[[", "]]");
 
