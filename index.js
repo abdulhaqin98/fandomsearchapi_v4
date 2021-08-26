@@ -200,15 +200,27 @@ async function fetchMovies() {
           // StarWars Fanodm Page of size 453996 creating call stack error. Word: 'Paragon', 'Arrant'
           // A workaround is to just ignore it.
           // Only URL Counter for this specific page will not work.
-          if (lowCaseData.length == 453996 || 460919) {
+          if (lowCaseData.length == 453996) {
             lowCaseData = '';
           }
+          if (lowCaseData.length == 460919) {
+            lowCaseData = '';
+          }
+
+          //
+
+          // if (lowCaseData.length == 453996 || 460919) {
+          //   lowCaseData = '';
+          // }
+          //
+          // This above always sets 'lowCaseData' to null. Hence, line 218 does not work.
+          // The split up alternative approach works fine.
 
           var resultObj = getFromBetween.get(lowCaseData, "[[", "]]");
 
           // console.log('line 208');
           // console.log(resultObj);
-          // console.log(lowCaseData);
+          // console.log(lowCaseData.length);
           // console.log(getFromBetween.get(lowCaseData, "[[", "]]"));
 
           for (var x in resultObj) {
