@@ -58,7 +58,8 @@ const url = ['https://friends.fandom.com/',
   'https://starwars.fandom.com/',
   'https://pokemon.fandom.com/',
   'https://bojackhorseman.fandom.com/',
-  'https://simpsons.fandom.com/'
+  'https://simpsons.fandom.com/',
+  'https://fastandfurious.fandom.com/'
 ];
 
 // Update link 103 loop count
@@ -68,7 +69,7 @@ const series = ['Friends', 'H.I.M.Y.M', 'The Office (US)', 'The Big Bang Theory'
   'The Godfather', 'PotC', 'Sherlock', 'Dragonball', 'The Hunger Games',
   'M.C.U', 'Marvel Database', 'Batman', 'D.C. Database', 'D.C Movies', 'D.C. Extended Universe',
   'Twilight Saga', 'T.A.A.H.M', 'Suits', 'Terminator', 'South Park','Star Wars',
-  'Pokemon', 'Bojack Horseman', 'Simpsons'];
+  'Pokemon', 'Bojack Horseman', 'Simpsons','Fast and Furious'];
 
 var title;
 var link;
@@ -103,7 +104,7 @@ async function fetchMovies() {
   html = '';
   document.getElementById('result').innerHTML = null;
 
-  for (i = 0; i < 29; i++) {
+  for (i = 0; i < 30; i++) {
 
     const response = await fetch(url[i] + 'api.php?action=opensearch&search=' + key + '&format=json&origin=*').then(res =>
       res.json()).then(d => {
