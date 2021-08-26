@@ -198,6 +198,8 @@ async function fetchMovies() {
           };
 
           // StarWars Fanodm Page of size 453996 creating call stack error. Word: 'Paragon', 'Arrant'
+          // Sometimes about 1 out of 5, the Stack Error does not comes.
+          //    JS is very moody. It does not throw stack error whenever it wants.
           // A workaround is to just ignore it.
           // Only URL Counter for this specific page will not work.
           if (lowCaseData.length == 453996) {
@@ -294,7 +296,8 @@ async function fetchMovies() {
           <div class="card-body d-flex justify-content-between py-1">
               <h6 class="card-title my-auto col-md-6">${title[j]}</h6>
               <div class="col-md-2"></div>
-              <h6 class="card-title my-auto col-md-2">${'~(' + countWords + ')'}</h6>
+              <h6 class="card-title my-auto col-md-1">${'~(' + countWords + ')'}</h6>
+              <button class="btn btn-primary" type="button" id=${link[j]} onclick="FNrawWikiPopUp(this)">#</button>
               <a href="${link[j]}" target="_blank" class="btn btn-primary p-2  col-md-1">Link</a>
               <button id=${link[j]} onclick='consoPut(this);' class="btn btn-primary mx-1 col-md-1">+</button>
             </div>
@@ -608,6 +611,71 @@ function syncWikiToFirebase() {
 // function storeWikiToFirebase(){
 //   console.log('called');
 // }
+
+async function FNrawWikiPopUp(e){
+  // alert(url.id);
+
+  var url = e.id;
+  var wiki = url.split('wiki/');
+  var FNcontentArray = [];
+
+  var navTabArray = ['nav001', 'nav002', 'nav003'];
+  var navTabArrayAria = ['nav001-tab', 'nav002-tab', 'nav003-tab'];
+  var navTabHtml = '';
+  var navBodyHtml = '';
+
+  await fetch(wiki[0] + 'api.php?action=query&prop=revisions&titles=' + wiki[1] + '&rvprop=content&format=json&origin=*')
+    .then(response => response.json())
+    .then((data) => {
+      var rawData = data.query.pages;
+      var key = Object.keys(rawData);
+
+      // console.log(key);
+      // console.log(rawData[key].revisions[0]["*"]);
+
+      try {
+        var content = rawData[key].revisions[0]["*"];
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+      FNcontentArray.push(content);
+
+      var workData = JSON.parse(JSON.stringify(FNcontentArray[0]).replace(/\\n/g, '<br>'));
+
+      console.log("line 645");
+      console.log(workData);
+
+      // var kLength = Object.keys(workData).length;
+
+      // for (var x = 0; x < kLength; x++) {
+        var x=0;
+
+        navTabHtml += `<button class="nav-link" id="${navTabArrayAria[x]}" data-bs-toggle="tab" data-bs-target="#${navTabArray[x]}"
+        type="button" role="tab" aria-controls="${navTabArray[x]}" aria-selected="true">${wiki[1]}</button>`
+
+        navBodyHtml += `<div class="tab-pane fade p-3" id="${navTabArray[x]}" role="tabpanel" aria-labelledby="${navTabArrayAria[x]}">
+                      ${workData}
+                      </div>`
+      // }
+
+      document.getElementById('nav-tab').innerHTML = navTabHtml;
+      document.getElementById('nav-tabContent').innerHTML = navBodyHtml;
+
+      navTabHtml = '';
+      navBodyHtml = '';
+      workData.length = 0;
+      FNcontentArray.length = 0;
+
+    });
+
+    // console.log("line 639");
+    // console.log(FNcontentArray);
+
+    const rawDataModal = new bootstrap.Modal(document.getElementById('rawdataModal'));
+    rawDataModal.show();
+}
 
 function rawWikiPopUp(e) {
 
