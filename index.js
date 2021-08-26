@@ -197,10 +197,10 @@ async function fetchMovies() {
             }
           };
 
-          // StarWars Fanodm Page of size 453996 creating call stack error. Word: 'Paragon'
+          // StarWars Fanodm Page of size 453996 creating call stack error. Word: 'Paragon', 'Arrant'
           // A workaround is to just ignore it.
           // Only URL Counter for this specific page will not work.
-          if (lowCaseData.length == 453996) {
+          if (lowCaseData.length == 453996 || 460919) {
             lowCaseData = '';
           }
 
